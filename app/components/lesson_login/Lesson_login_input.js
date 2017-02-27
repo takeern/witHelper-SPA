@@ -1,0 +1,32 @@
+/**
+ * Created by Administrator on 2016/11/20.
+ */
+var React = require('react');
+var lessonLoginStore=require('../../stores/sendStore/xhxmStore.js');
+var Lesson_login_input= React.createClass({
+    getInitialState:function(){
+        "use strict";
+        return{
+            value:null
+        }
+    },
+    handleBlur:function(e){
+        "use strict";
+        lessonLoginStore.set(e.target.value,this.props.name);
+    },
+    handleChange:function(e){
+        "use strict";
+        var val=e.target.value;
+        this.setState({
+            value:val
+        })
+    },
+    render: function () {
+        "use strict";
+        return (
+            <input type="text"  className="form-control input-sm chat-input"  value={this.state.val} placeholder={this.props.name} onChange={this.handleChange} onBlur={this.handleBlur}/>
+        )
+    }
+
+});
+module.exports =Lesson_login_input;
