@@ -31,7 +31,7 @@
  module.exports = ChooseLessonStore; 
  ```
  4. 组件更改state，重新渲染（此处数据全部渲染，没有使用shouldUpdate优化，因为第一用户很少会再次点击，也就是相同的数据很少，优化也取得不了多大效果，第二，因为此处数据可变性，基本每次选课都会变化，所以数据不会缓存。）
- 为何将action，store封装，不使用redux之类的库，因为该项目的数据不需要在store中完成逻辑处理，我将数据全部放在每个组件中处理，大量的逻辑处理放在store中，会弱化store的意义，并且让它肿大
+ 为何将action，store封装，不使用redux之类的库，因为该项目的数据不需要在store中完成逻辑处理，我将数据全部放在每个组件中处理，大量的逻辑处理放在store中，会弱化store的意义，并且让它肿大<br>
  [更加详细的原因及我对flux的理解](http://www.cnblogs.com/takeern/p/6476262.html)
  [详细的模块构建](http://www.cnblogs.com/takeern/p/6476318.html)
 
@@ -43,7 +43,7 @@
 <nav class="foot_nav" id="foot_nav"></nav>
 <div class="itemContent" id="itemContent"></div>
 ``` 
- 一共4个容器，header，foot作为导航容器，container，content作为功能容器（分为主负），功能容器有对应的control，高等级的容器调用低等级容器的方法，每个平行等级容器是没有关联，耦合度低的，所以将来如果有新得容器出现也应该有对应的渲染方法。
+ 一共4个容器，header，foot作为导航容器，container，content作为功能容器（分为主负），功能容器有对应的control，高等级的容器调用低等级容器的方法，每个平行等级容器是没有关联，耦合度低的，所以将来如果有新得容器出现也应该有对应的渲染方法。<br>
 [详细的渲染方法及构建原因](http://www.cnblogs.com/takeern/p/6445885.html)
 ## 效果图
-![]()![]()![]()![]()![]()![]()
+![](https://github.com/takeern/witHelper-SPA/blob/master/app/image/acPublish.png)![](https://github.com/takeern/witHelper-SPA/blob/master/app/image/lesson.png)![](https://github.com/takeern/witHelper-SPA/blob/master/app/image/some.png)![](https://github.com/takeern/witHelper-SPA/blob/master/app/image/leLogin.png)![](https://github.com/takeern/witHelper-SPA/blob/master/app/image/ac.png)![](https://github.com/takeern/witHelper-SPA/blob/master/app/image/chooseLesson.png)![](https://github.com/takeern/witHelper-SPA/blob/master/app/image/acLogin.png)
