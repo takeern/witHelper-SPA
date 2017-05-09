@@ -35,8 +35,8 @@
  ```
  4. 组件更改state，重新渲染（此处数据全部渲染，没有使用shouldUpdate优化，因为第一用户很少会再次点击，也就是相同的数据很少，优化也取得不了多大效果，第二，因为此处数据可变性，基本每次选课都会变化，所以数据不会缓存。）
  为何将action，store封装，不使用redux之类的库，因为该项目的数据不需要在store中完成逻辑处理，我将数据全部放在每个组件中处理，大量的逻辑处理放在store中，会弱化store的意义，并且让它肿大<br>
- [更加详细的原因及我对flux的理解](http://www.cnblogs.com/takeern/p/6476262.html)
- [详细的模块构建](http://www.cnblogs.com/takeern/p/6476318.html)
+ [更加详细的原因及我对flux的理解](https://github.com/takeern/witHelper-SPA/blob/master/app/text/flux%E7%9A%84%E7%90%86%E8%A7%A3%E5%8F%8Astore%E7%9A%84%E6%84%8F%E4%B9%89.txt)
+ [详细的模块构建](https://github.com/takeern/witHelper-SPA/blob/master/app/text/%E8%AF%A5%E9%A1%B9%E7%9B%AE%E6%B8%B2%E6%9F%93%E6%A8%A1%E5%BC%8F%20.txt)
 
 ## 模块挂载
 
