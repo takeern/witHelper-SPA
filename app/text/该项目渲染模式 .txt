@@ -1,0 +1,18 @@
+本篇我会介绍如何添加新的功能同时不影响其他的功能，再该结构下我是如何解耦合，以及一些习惯用法（如命名），一些选择比如一些库的选择，性能上的优化等，首先我会介绍如何设计自己的react组件（主要讲解我的一些习惯）不会过多讲解基础，不按我的习惯也没有关系（只是把组件添加上去需要按我的方法），而总结构不管你的组件，所以重点放在如何把已写好的功能react模块添加到项目中。
+       我以课程模块为例，首先分析课程模块下有两个子功能模块，查看课程表和抢课。
+            step 1 设计该子功能模块（仅讨论查看课程表）其余设计上大同小异。
+                    a.  整个页面分为 header  ，container ，foot，item_content 。我将主要功能区放在containe上,item_content为副功能区，他是主功能去的补充，比如一些登录界面，或者主功能区中一些功能具体使用时也可以放在副功能区中，foot，header，都是作为导航，后面将会讨论。
+                    b.  自己的习惯命名为驼峰式命名，所以每个react文件大多都是驼峰式命名，如lessonLi，但是作为每个功能块的最上层我比较喜欢加一个wrapper，同时它的命名方式也改为以_连接，如lesson_wrapper，因为当模块多了，有时候找一个功能模块顶层接口，还要一个一个的查，同时也给css布局留下一定的空间，因为使用的flux模式，所以给每个顶层先写好订阅器，这样可能将来需求改变，或者渲染方式改变，也不需要完全更改代码，现在假设lesson模块已经设计好咯，但是只是有图形界面，是一个静态的，数据，以及处理数据的方法，都还没有添加上去。
+                    c.  伪造后端数据。以前在flux理解中提过，该项目各模块获取数据的流程，与后端交互，获取提交数据都放在getData中，这里面的js负责获取后端数据，在后端没有做好前，可以先伪造好数据，基本就是return data，data先伪造，后端好了直接补。so 我们做好了 getLessonData。
+                    d.  获取上一步的数据，就要将它发送到Store中，所以构建一个Action，将上一步的data发送到store中，action.type的命名我习惯为sendXxData，防止命名重复，
+                    e.  构建Store，我将构建简化，直接调用FluxStore，它是一个构造函数，前面提到过Store中不处理数据，只是保存数据，所以大多Store都像差不多，你只需要传入一个{action.type：‘sendLessonData’}参数，当然为了防止有些确实需要处理数据，那么请将他放到handSendAction中，那么直接传入一个handleaction也可以{action：function}，你看到了，参数都是对象，后面也会采用这样的方法，原因就是怕你忘记参数传入顺序，也没有像jQuery那样的文档，而我仅希望你少看源码就可以工作，还是解释一下FluxStore，他有addlinstener，removelistener，set，get，前面两个用与发布订阅的实现，后面用于存储数据，从store中提取数据。如果传入action.type说明无需处理数据，直接将数据set，直接从FluxStore中继承handleAction，但是有需求处理数据，那么久应该传入handleAction。ok store也就构建好了。
+                    f.  各部分都已经写好，现在将它连起来，事实上也很简单，react模块顶层订阅该Store，渲染该模块时获取数据，当Store中数据改变是获取数据，无需考虑React模块该什么时候渲染！需要注意的是改变react State时，要检测该组件是否挂载。组件就写完了。
+           step 2 将该组件挂载到app中。
+                    a.  前面介绍到 foot，header。都是导航模块，foot属于大功能快上的切换，如从活动切换到课程，而header属于子功能模块上的切换，如课程表，抢课。
+                    b.  大模块上的切换，点击课程，foot组件会将点击的当前点击LI的text，发送到foot顶层，顶层将该text当做参数，执行readyRender函数，然后readyRender根据参数switch，然后case。所以首先添加一个case 就是我们要添加的页面此处为“课程”，然后那些东西需要被渲染，header，container，item_content
+                                  1 要防止上一个功能块的页面对本页面的干扰，container是不会被干扰的，每个功能页面必会重新渲染Container,header，不用管conatier。需要处理的是Item_content,Restart模块可以执行该功能Return null，每次大模块挂载时，使用Restart将content重置。
+                                  2 渲染container，container和readyrenader类似，也是传入一个参数，此处为‘课表’，container也会Switch，case，然后将做的功能模块挂载上去，此处我们就是将上一步中写的lesson模块添加上去，同时记得执行SendAction。然后就挂载成功。
+                                  3 前面的containerRender要执行，才能成功，如readyRender是在foot切换时执行，此处的containerRender就是在header切换时执行，所以现在要挂载header，每一个大功能页面的header都不同，使用set_header函数来挂载，传入参数也是一个对象header={}，一个属性为headerNavLiData，一个数组有多条格式为对象的数据，此处例子为：header.headerNavLiData=[{tetx:'课表',id:'1',class:'col-xs-6'},{text:'抢课',id:'2',class:'col-xs-6'}],text表示headerli的text，同时这个数据将会传入containerRender中所以要保持一致性，id用于react的key，class为bootsrap的栅格排布方式，此处有两条数据所以尾数为12/2=6，header.topSpanData=[{id:"1",class:""}],改属性表示header上方span的view，class表示字体图标，根据图标得到不同功能，header.title=“课程”,header的text，
+所以要传入的header有三条属性，不能缺少。执行set_header（header），将会挂载。
+                   c.   这里基本就完成，但是为了便于理解，写一遍app运行的大致方向，首先访问页面，获取本地存储，得到上次关闭时的界面text，如果没有就讲活动页面当做初始页面，text就为活动，然后将text当做参数传入组件foot进行挂载，调用ReadyRender（text），根据text的不同，进行渲染，首先是header的渲染，set_header,然后调用containerRender（），根据参数的不同，渲染container，此时foot，conatainer，header都已经挂载，至于item_content他是container的补充。
+     写两个render，是想将它分离开，每个等级的容器有每个渲染方法，高等级的容器调用低等级容器的方法，每个平行等级容器是没有关联，耦合度低的，所以将来如果有新得容器出现也应该有对应的渲染方法。

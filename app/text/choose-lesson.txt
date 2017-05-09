@@ -1,0 +1,8 @@
+choose_lesson 版块构建：
+       step1: getChooseLessondata()从服务器获取选课数据。
+       step2：sendChooseLessonData（），将上一步获取的数据通过sub/pub的模式发送给Store，
+       step3：store中handle新数据时存储数据，同时触发数据change，告知订阅组件，新数据来了，
+       step4：组件更改state，重新渲染，（此处数据全部渲染，没有使用should优化，因为第一用户很少会再次点击，也就是相同的数据很少，优化也取得不了多大效果，第二，因为此处数据可变性，基本每次选课都会变化，所以数据不会缓存。第三，我懒啦），
+      数据提交：
+       step1：click课程，formChooseStore暴露一个方法将选取课程id提交到store中，如果该id已经存在那么就是取消该课程选取，没有就添加（这类formstore是新分出的一类store，他的特点没有pub/sub，订阅发布也没有，他只有一个作用收集提交的数据，只有一个行为将数据提交）
+       step2：lessonButton中调用formChooseStore中的send方法，viewState（此处爬虫必须数据）,str（相当于教务系统的session），都从开始存储数据的store中获得（有重复利用的数据就用这类Store）。
